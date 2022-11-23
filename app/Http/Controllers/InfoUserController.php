@@ -26,6 +26,7 @@ class InfoUserController extends Controller
             'location' => ['max:70'],
             'about_me'    => ['max:150'],
         ]);
+        
         if($request->get('email') != Auth::user()->email)
         {
             if(env('IS_DEMO') && Auth::user()->id == 1)

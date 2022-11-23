@@ -10,29 +10,39 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionsController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VisitorController;
+use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\GallerypageController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectpageController;
+use App\Http\Controllers\BahasaController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\AboutpageController;
+use App\Http\Controllers\ContactpageController;
+use App\Http\Controllers\DaftarprojectController;
+use App\Http\Controllers\ProjectdetailController;
+use App\Http\Controllers\AplikasiController;
+use App\Http\Controllers\PengalamankerjaController;
+use App\Http\Controllers\KeahlianController;
+use App\Http\Controllers\InformasipribadiController;
+use App\Http\Controllers\PendidikanController;
+use App\Http\Controllers\LandingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-/*	
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 
 Route::group(['middleware' => 'auth'], function () {
-
-    Route::get('/', [HomeController::class, 'home']);
 	
-	
+		Route::prefix('gallery')->group(function () {
+            Route::get('/', [GalleryController::class, 'index'])->name('gallery.index');
+            Route::post('/store', [GalleryController::class, 'store'])->name('gallery.store');
+            Route::get('/delete/{id}', [GalleryController::class, 'destroy'])->name('gallery.delete');
+        });
+		Route::get('/', [VisitorController::class, 'index']);
+		Route::view('/login', 'visitor-page.login');
 
 	Route::get('dashboard', function () {
 		return view('dashboard');
@@ -92,19 +102,51 @@ Route::group(['middleware' => 'guest'], function () {
 	Route::post('/reset-password', [ChangePasswordController::class, 'changePassword'])->name('password.update');
 	
 	
-	
 });
 
-Route::get('/login', function () {
-    return view('session/login-session');
-})->name('login');
+Route::get('/landing', function () {
+    return view('visitor-page.landing-page');
+})->name('landing');
 
     Route::resource('user', UserController::class);
 	Route::resource('posts', PostController::class);	
 	
 	Route::resource('roles', RolesController::class) ;
     Route::resource('permissions', PermissionsController::class);
+
+	Route::resource('galery', GalleryController::class);
+	Route::resource('project', ProjectController::class);
+	Route::resource('about', AboutController::class);
+	Route::resource('bahasa', BahasaController::class);
+	Route::resource('aplikasi', AplikasiController::class);
+
+	Route::resource('projects', ProjectpageController::class);
+	Route::resource('gallerys', GallerypageController::class);
+	Route::resource('abouts', AboutpageController::class);
+	Route::resource('contacts', ContactpageController::class);
 	
+	Route::resource('pengalamankerja', PengalamankerjaController::class);
+	Route::resource('keahlian', KeahlianController::class);
+	Route::resource('informasipribadi', InformasipribadiController::class);
+	Route::resource('pendidikan', PendidikanController::class);
+
+	Route::post('/contacts', [ContactpageController::class, 'sendMail']);	
+		
 	Route::put('post/{id}/publish', [PostController::class, 'publish'])->name('post.publish');
 	Route::put('post/{id}/unpublish', [PostController::class, 'unpublish'])->name('post.unpublish');
+	
+	Route::resource('visitor-page.project-page', ProjectpageController::class);
+	
+	Route::resource('visitor-page.landing-page', VisitorController::class);
+
+	Route::resource('projects-detail', ProjectdetailController::class);
+	Route::resource('daftar-projects', DaftarprojectController::class);
+	Route::resource('home', LandingController::class);
+	
+	Route::get('/Project/{project}', [DaftarprojectController::class, 'show'])->name('project.detail');
+	Route::get('/Project-bahasa/{bahasa}', [DaftarprojectController::class, 'project_bahasa'])->name('project.bahasa');
+	Route::get('/Project-aplikasi/{aplikasi}', [DaftarprojectController::class, 'project_aplikasi'])->name('project.aplikasi');
+	
+	
+	
 	
